@@ -196,16 +196,16 @@ function Dashboard() {
 
           {/* Hero compliance ring */}
           <div className="flex items-center gap-6">
-            <div className="relative h-32 w-32">
-              <ResponsiveContainer>
-                <RadialBarChart innerRadius="70%" outerRadius="100%" data={[{ name: "score", value: overall, fill: "hsl(var(--primary))" }]} startAngle={90} endAngle={-270}>
+            <div className="relative h-32 w-32 flex items-center justify-center">
+              <ResponsiveContainer width="100%" height="100%">
+                <RadialBarChart innerRadius="85%" outerRadius="100%" data={[{ name: "score", value: overall, fill: "hsl(var(--primary))" }]} startAngle={90} endAngle={-270}>
                   <PolarAngleAxis type="number" domain={[0, 100]} tick={false} />
-                  <RadialBar background={{ fill: "hsl(var(--muted))" }} dataKey="value" cornerRadius={20} />
+                  <RadialBar background={{ fill: "hsl(var(--muted)/0.5)" }} dataKey="value" cornerRadius={10} />
                 </RadialBarChart>
               </ResponsiveContainer>
-              <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <div className="font-display text-3xl font-semibold leading-none">{overall}%</div>
-                <div className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">Compliance</div>
+              <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                <div className="font-display text-4xl font-bold tracking-tighter leading-none">{overall}%</div>
+                <div className="mt-1 text-[8px] font-bold uppercase tracking-[0.2em] text-muted-foreground/80">Compliance</div>
               </div>
             </div>
             <div className="space-y-2">
@@ -306,12 +306,24 @@ function Dashboard() {
           <h3 className="text-sm font-semibold">Lawful basis mix</h3>
           <p className="text-xs text-muted-foreground">Top processing bases across RoPA</p>
           <div className="mt-4 h-56">
-            <ResponsiveContainer>
+            <ResponsiveContainer width="100%" height="100%">
               <PieChart>
-                <Pie data={ropaMix ?? []} dataKey="value" nameKey="name" innerRadius={45} outerRadius={75} paddingAngle={2}>
+                <Pie 
+                  data={ropaMix ?? []} 
+                  dataKey="value" 
+                  nameKey="name" 
+                  innerRadius={55} 
+                  outerRadius={80} 
+                  paddingAngle={5}
+                  label={false}
+                  stroke="none"
+                >
                   {(ropaMix ?? []).map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                 </Pie>
-                <RTooltip contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 8, fontSize: 12 }} />
+                <RTooltip 
+                  contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 12, fontSize: 11, boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)" }}
+                  itemStyle={{ fontWeight: 600 }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>

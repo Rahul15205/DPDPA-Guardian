@@ -47,50 +47,62 @@ function AppShell() {
 
   return (
     <div className="flex min-h-screen bg-background">
-      <aside className="hidden w-64 shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground md:flex">
-        <div className="flex h-16 items-center border-b border-sidebar-border px-5">
-          <Wordmark className="text-sidebar-foreground" />
+      {/* Fixed Sidebar */}
+      <aside className="fixed left-0 top-0 z-40 hidden h-screen w-72 shrink-0 flex-col border-r border-white/10 bg-gradient-to-b from-[#0a331b] to-[#010b05] text-white shadow-xl md:flex">
+        <div className="flex h-20 items-center border-b border-white/10 px-6">
+          <Wordmark className="text-white" />
         </div>
-        <div className="flex items-center gap-2 border-b border-sidebar-border px-5 py-4 text-sm">
-          <div className="flex h-8 w-8 items-center justify-center rounded-md bg-sidebar-accent text-sidebar-primary">
-            <Building2 className="h-4 w-4" />
+        
+        <div className="flex items-center gap-3 border-b border-white/10 px-6 py-5">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white/10 text-[#1dd05e] border border-white/10 shadow-inner">
+            <Building2 className="h-5 w-5" />
           </div>
           <div className="min-w-0">
-            <div className="truncate font-medium">{membership.org_name}</div>
-            <div className="text-[11px] uppercase tracking-wider opacity-60">{membership.role}</div>
+            <div className="truncate font-semibold text-base leading-tight">{membership.org_name}</div>
+            <div className="mt-0.5 text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">{membership.role}</div>
           </div>
         </div>
-        <nav className="flex-1 space-y-0.5 p-3">
+
+        <nav className="flex-1 space-y-1.5 overflow-y-auto p-4 scrollbar-hide">
           {nav.map((n) => {
             const active = path === n.to || path.startsWith(n.to + "/");
             return (
               <Link
                 key={n.to}
                 to={n.to}
-                className={`flex items-center gap-2.5 rounded-md px-3 py-2 text-sm transition-colors ${
+                className={`flex items-center gap-3.5 rounded-xl px-4 py-3 text-[15px] font-medium transition-all duration-200 ${
                   active
-                    ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent/60 hover:text-sidebar-accent-foreground"
+                    ? "bg-white/15 text-white shadow-md border border-white/5"
+                    : "text-white/60 hover:bg-white/10 hover:text-white"
                 }`}
               >
-                <n.icon className="h-4 w-4" />
+                <n.icon className={`h-5 w-5 shrink-0 transition-colors ${active ? "text-[#1dd05e]" : ""}`} />
                 {n.label}
               </Link>
             );
           })}
         </nav>
-        <div className="border-t border-sidebar-border p-3">
-          <Button variant="ghost" size="sm" className="w-full justify-start text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-accent-foreground" onClick={async () => { await signOut(); navigate({ to: "/" }); }}>
-            <LogOut className="mr-2 h-4 w-4" /> Sign out
+
+        <div className="border-t border-white/10 p-4">
+          <Button 
+            variant="ghost" 
+            size="lg" 
+            className="w-full justify-start rounded-xl text-white/60 hover:bg-white/10 hover:text-white" 
+            onClick={async () => { await signOut(); navigate({ to: "/" }); }}
+          >
+            <LogOut className="mr-3 h-5 w-5" /> <span className="text-base font-medium">Sign out</span>
           </Button>
         </div>
       </aside>
-      <main className="flex flex-1 flex-col overflow-x-hidden">
+
+      {/* Main Content Area */}
+      <main className="flex flex-1 flex-col overflow-x-hidden md:pl-72">
         <AppHeader />
         <div className="flex-1">
           <Outlet />
         </div>
       </main>
+      
       <CommandPalette />
       <QuickActionFab />
     </div>
