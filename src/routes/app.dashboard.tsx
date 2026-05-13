@@ -116,7 +116,7 @@ const TOUR_STEPS = [
   { title: "Drill into anything", body: "Click any tile, chart or row to jump straight to the underlying records." },
 ];
 
-const PIE_COLORS = ["hsl(var(--primary))", "hsl(var(--accent))", "hsl(var(--muted-foreground))", "hsl(var(--destructive))", "hsl(var(--secondary-foreground))"];
+const PIE_COLORS = ["#10b981", "#3b82f6", "#f59e0b", "#ef4444", "#8b5cf6", "#6366f1"];
 
 function Dashboard() {
   const { membership } = useAuth();
@@ -321,8 +321,17 @@ function Dashboard() {
                   {(ropaMix ?? []).map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
                 </Pie>
                 <RTooltip 
-                  contentStyle={{ background: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: 12, fontSize: 11, boxShadow: "0 10px 15px -3px rgb(0 0 0 / 0.1)" }}
-                  itemStyle={{ fontWeight: 600 }}
+                  cursor={{ fill: 'transparent' }}
+                  contentStyle={{ 
+                    background: "rgba(255, 255, 255, 0.95)", 
+                    backdropFilter: "blur(4px)",
+                    border: "1px solid #e2e8f0", 
+                    borderRadius: "12px", 
+                    fontSize: "12px", 
+                    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                    padding: "8px 12px"
+                  }}
+                  itemStyle={{ fontWeight: 600, color: "#1e293b" }}
                 />
               </PieChart>
             </ResponsiveContainer>
