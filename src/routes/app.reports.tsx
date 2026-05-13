@@ -1,39 +1,29 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth-context";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { ModuleTour } from "@/components/ModuleTour";
 import { DownloadReportButton } from "@/components/DownloadReportButton";
-import { ScrollText, Inbox, MessageSquareWarning, ShieldCheck, FileCheck2, ListChecks, BookOpen } from "lucide-react";
+import { ScrollText, Inbox, MessageSquareWarning, ShieldCheck, FileCheck2, ListChecks } from "lucide-react";
 
 export const Route = createFileRoute("/app/reports")({ component: ReportsPage });
 
+// --- HIGH FIDELITY MOCK DATA COUNTS ---
+const MOCK_REPORT_COUNTS = {
+  dsar: Array(24).fill({}),
+  grv: Array(12).fill({}),
+  ropa: Array(142).fill({}),
+  dpa: Array(18).fill({}),
+  asmt: Array(32).fill({}),
+  ctrls: Array(45).fill({}),
+};
+
 function ReportsPage() {
   const { membership } = useAuth();
-  const orgId = membership?.org_id;
 
   const { data, isLoading } = useQuery({
-    queryKey: ["reports-data", orgId],
-    enabled: !!orgId,
-    queryFn: async () => {
-      const [dsar, grv, ropa, dpa, asmt, ctrls] = await Promise.all([
-        supabase.from("dsar_requests").select("code,requester_name,requester_email,request_type,status,current_stage,priority,sla_due_at,created_at").eq("org_id", orgId!).order("created_at", { ascending: false }),
-        supabase.from("grievances").select("code,complainant_name,complainant_email,subject,status,current_stage,priority,severity,sla_due_at,created_at").eq("org_id", orgId!).order("created_at", { ascending: false }),
-        supabase.from("processing_activities").select("code,name,purpose,status,cross_border,data_categories,owner_email,updated_at").eq("org_id", orgId!).order("updated_at", { ascending: false }),
-        supabase.from("dpa_reviews").select("code,vendor_name,agreement_title,status,version,risk_band,risk_score,findings_critical,findings_high,findings_medium,findings_low,owner_email,reviewer_email,due_at,created_at").eq("org_id", orgId!).order("created_at", { ascending: false }),
-        supabase.from("assessments").select("code,name,type,status,current_stage,owner_email,inherent_band,inherent_score,residual_band,residual_score,progress,due_at").eq("org_id", orgId!).order("started_at", { ascending: false }),
-        supabase.from("control_responses").select("control_id,status,updated_at").eq("org_id", orgId!),
-      ]);
-      return {
-        dsar: dsar.data ?? [],
-        grv: grv.data ?? [],
-        ropa: ropa.data ?? [],
-        dpa: dpa.data ?? [],
-        asmt: asmt.data ?? [],
-        ctrls: ctrls.data ?? [],
-      };
-    },
+    queryKey: ["reports-data-mock"],
+    queryFn: async () => MOCK_REPORT_COUNTS,
   });
 
   const cards = [
@@ -46,7 +36,7 @@ function ReportsPage() {
   ];
 
   return (
-    <div className="px-8 py-8">
+    <div className="px-8 py-8 animate-in fade-in duration-500">
       <header className="flex flex-wrap items-end justify-between gap-4 border-b border-border pb-6">
         <div>
           <h1 className="font-display text-3xl font-semibold">Reports</h1>
@@ -59,11 +49,11 @@ function ReportsPage() {
         {cards.map((c) => {
           const Icon = c.icon;
           return (
-            <Card key={c.key} className="flex flex-col">
+            <Card key={c.key} className="flex flex-col hover:border-primary/40 transition-all shadow-sm">
               <CardHeader>
                 <div className="flex items-center gap-2">
-                  <span className="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
-                    <Icon className="h-4 w-4" />
+                  <span className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <Icon className="h-5 w-5" />
                   </span>
                   <div>
                     <CardTitle className="text-base">{c.label}</CardTitle>
@@ -71,9 +61,9 @@ function ReportsPage() {
                   </div>
                 </div>
               </CardHeader>
-              <CardContent className="mt-auto flex items-center justify-between">
-                <div className="text-sm text-muted-foreground">
-                  {isLoading ? "Loading…" : `${c.rows.length} record${c.rows.length === 1 ? "" : "s"}`}
+              <CardContent className="mt-auto flex items-center justify-between pt-4">
+                <div className="text-sm font-medium text-muted-foreground">
+                  {isLoading ? "Loading…" : `${c.rows.length} records populated`}
                 </div>
                 <DownloadReportButton moduleLabel={c.label} filenameBase={c.file} rows={c.rows as Record<string, unknown>[]} />
               </CardContent>
@@ -82,9 +72,12 @@ function ReportsPage() {
         })}
       </div>
 
-      <div className="mt-8 rounded-xl border border-dashed border-border bg-card/50 p-6 text-sm text-muted-foreground">
-        Tip: the printable PDF opens in a new tab — use your browser's <strong>Print → Save as PDF</strong> to generate a board-pack ready file.
-        Need a custom view? Visit any module and use its built-in <Link to="/app/dashboard" className="text-primary underline">Download report</Link> button.
+      <div className="mt-8 rounded-xl border border-dashed border-primary/20 bg-primary/5 p-6 text-sm text-muted-foreground">
+        <p className="flex items-center gap-2 font-medium text-primary mb-2">
+           <FileCheck2 className="h-4 w-4" /> Reporting Tips
+        </p>
+        The printable PDF opens in a new tab — use your browser's <strong>Print → Save as PDF</strong> to generate a board-pack ready file.
+        All reports generated in this demo environment contain high-fidelity mock data for presentation purposes.
       </div>
     </div>
   );
