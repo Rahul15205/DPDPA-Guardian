@@ -155,6 +155,8 @@ function Dashboard() {
     return den > 0 ? Math.round((num / den) * 100) : 0;
   }, [scores]);
 
+  const totalMix = useMemo(() => (ropaMix ?? []).reduce((sum, item) => sum + item.value, 0), [ropaMix]);
+
   const ctrlPct = kpis && kpis.ctrlTotal > 0 ? Math.round((kpis.ctrlImpl / kpis.ctrlTotal) * 100) : 0;
 
   const actionQueue = useMemo(() => {
@@ -305,7 +307,7 @@ function Dashboard() {
         <div className="card-3d rounded-xl border border-border bg-card p-5 shadow-sm">
           <h3 className="text-sm font-semibold">Lawful basis mix</h3>
           <p className="text-xs text-muted-foreground">Top processing bases across RoPA</p>
-          <div className="mt-4 h-56">
+          <div className="relative mt-4 h-56">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie 
@@ -335,6 +337,10 @@ function Dashboard() {
                 />
               </PieChart>
             </ResponsiveContainer>
+            <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+              <div className="text-2xl font-bold text-slate-900">{totalMix}</div>
+              <div className="text-[9px] uppercase tracking-wider text-muted-foreground font-semibold">Total Activities</div>
+            </div>
           </div>
           <div className="mt-2 space-y-1">
             {(ropaMix ?? []).slice(0, 4).map((m, i) => (
