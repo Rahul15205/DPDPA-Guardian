@@ -5,6 +5,9 @@ import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+  server: {
+    allowedHosts: ["app.prod.pddpdpapd.protecciodata.co.in"],
+  },
   plugins: [
     tanstackStart({
       server: { entry: "src/server.ts" },
